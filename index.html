@@ -32,9 +32,6 @@ header .wrap{position:relative;width:100%}
 .hstage>svg{position:absolute;inset:8%;width:84%;height:84%;transition:opacity .6s}
 .hstage canvas{position:absolute;inset:0}
 .hstage.live>svg{opacity:0}
-.hint3d{position:absolute;z-index:1;bottom:4%;left:50%;transform:translateX(-50%);font-size:13px;background:rgba(26,15,36,.35);padding:4px 12px;border-radius:999px;white-space:nowrap;opacity:0;transition:opacity .6s;pointer-events:none}
-.hstage.live .hint3d{opacity:1}
-.credit{font-size:13px;color:var(--mut);margin-top:18px}
 @media(prefers-reduced-motion:no-preference){
  .intro h1,.intro .hero p,.intro .acts{animation:rise .9s cubic-bezier(.2,.7,.2,1) both}
  .intro .hero p{animation-delay:.15s}.intro .acts{animation-delay:.3s}
@@ -103,7 +100,6 @@ input[type=range]{accent-color:var(--main);width:100%;min-height:32px;padding:0;
     <path d="M204 176 C184 178 158 176 142 154 C132 140 130 118 140 96 M204 176 C224 178 252 174 268 150 C278 134 282 112 274 90" stroke="#1a0f24" stroke-width="6" fill="none" stroke-linecap="round"/><path d="M188 176 q16 -8 32 0" stroke="#1a0f24" stroke-width="9" fill="none" stroke-linecap="round"/>
     <polygon points="196,128 214,132 210,172 192,168" fill="#cf8f00"/>
   </svg>
-    <span class="hint3d">Arrastra para girar</span>
   </div>
 </div></header>
 
@@ -115,7 +111,6 @@ input[type=range]{accent-color:var(--main);width:100%;min-height:32px;padding:0;
 <footer class="band" id="contacto"><div class="wrap contact">
   <div><h2>¿Quieres algo a la medida?</h2><p class="hint" style="font-size:17px">Escríbenos por WhatsApp: personalizamos nombres, colores y tamaños, y también imprimimos tu propio diseño.</p></div>
   <div class="nums" id="nums"></div>
-  <p class="credit full" id="credit" hidden></p>
 </div></footer>
 
 <a id="fab" href="#" target="_blank" rel="noopener" aria-label="Escribir por WhatsApp"></a>
@@ -170,7 +165,7 @@ function render() {
 const geoCache = new Map();
 async function loadGeom(m) {
   if (geoCache.has(m.id)) return geoCache.get(m.id);
-  const g = Visor.parseSTL(await Visor.fetchSTL(m.stl)); geoCache.set(m.id, g); return g;
+  const g = await Visor.load(m.stl); geoCache.set(m.id, g); return g;
 }
 async function autoThumbs() {   // modelos sin miniatura: se dibujan aquí, uno a la vez
   for (const el of document.querySelectorAll('[data-auto]')) {
@@ -251,10 +246,9 @@ applyBrand();
 let heroViewer = null;
 async function loadHero() {
   const p = DATA.negocio.portada;
-  if (p && p.credito) { $('#credit').hidden = false; $('#credit').textContent = 'Modelo de portada: ' + p.credito; }
   if (!p || !p.stl || !window.THREE) return;
   try {
-    const g = Visor.parseSTL(await Visor.fetchSTL(p.stl));
+    const g = await Visor.load(p.stl);
     if (!heroViewer) heroViewer = Visor.create($('#hstage'), { hero: true });
     heroViewer.show(g, p.color || '#f3eee8', { x: p.rotX, y: p.rotY });
     $('#hstage').classList.add('live');

@@ -108,9 +108,9 @@ input[type=range]{accent-color:#ff1f6b;padding:0;border:0;background:none;min-he
             <div class="stage full" id="pstage" style="background:#ff1f6b"><div class="msg" id="pmsg" style="color:#fff">Sin modelo de portada</div></div>
             <label class="rot full" for="prx">Girar en X<input type="range" id="prx" min="-180" max="180" step="5" value="0"><output id="pox">0°</output></label>
             <label class="rot full" for="pry">Girar en Y<input type="range" id="pry" min="-180" max="180" step="5" value="0"><output id="poy">0°</output></label>
-            <label>Color<input id="pcolor" type="color" value="#f3eee8"></label>
-            <label>Crédito del modelo<input id="pcred" placeholder="Autor · licencia"></label>
-            <p class="note full" style="margin:0">Si el STL es de otra persona, escribe aquí su crédito y licencia. Por ejemplo: «Scan the World @ MyMiniFactory · CC BY-SA 4.0». Aparece al pie de la página.</p>
+            <label class="rot full" for="pdet">Detalle<input type="range" id="pdet" min="60" max="400" step="10" value="160"><output id="podet">160</output></label>
+            <p class="note full" id="pinfo" style="margin:0">Menos detalle = carga más rápida y un look más poligonal. Para la portada, entre 120 y 200 suele verse bien y abrir al instante.</p>
+            <label class="full">Color<input id="pcolor" type="color" value="#f3eee8"></label>
             <button type="button" id="pdel">Quitar portada</button><button class="pri" type="submit">Guardar portada</button>
           </form>
         </section>
@@ -206,7 +206,7 @@ $('#list').addEventListener('click', e => {
   if (b.dataset.up) { const i = +b.dataset.up; if (i > 0) { [CAT.modelos[i - 1], CAT.modelos[i]] = [CAT.modelos[i], CAT.modelos[i - 1]]; run('Reordenando', () => commit('Reordenar catálogo', [catFile()])); } }
   if (b.dataset.ed) { const m = CAT.modelos[+b.dataset.ed]; editing = m.id; $('#ftitle').textContent = 'Editar: ' + m.nombre; $('#mname').value = m.nombre; $('#mprice').value = m.precio; $('#mdesc').value = m.descripcion || ''; $('#mcolor').value = m.color || '#ff1f6b'; $('#save').textContent = 'Guardar cambios'; $('#fname').textContent = 'Sube un STL solo si quieres reemplazar el actual'; scrollTo({ top: 0, behavior: 'smooth' });
     stlBuf = null; geom = null; setRot(m.rotX || 0, m.rotY || 0); $('#smsg').style.display = ''; $('#smsg').textContent = 'Cargando modelo…';
-    Visor.fetchSTL(rawUrl(m.stl)).then(buf => { if (editing !== m.id) return; geom = Visor.parseSTL(buf); if (!viewer) viewer = Visor.create($('#stage')); viewer.show(geom, $('#mcolor').value, rot()); $('#smsg').style.display = 'none'; })
+    Visor.load(rawUrl(m.stl)).then(g => { if (editing !== m.id) return; geom = g; if (!viewer) viewer = Visor.create($('#stage')); viewer.show(geom, $('#mcolor').value, rot()); $('#smsg').style.display = 'none'; })
       .catch(() => { $('#smsg').textContent = 'No se pudo abrir el STL actual. Para cambiar la orientación, súbelo de nuevo.'; }); }
   if (b.dataset.del) { const i = +b.dataset.del, m = CAT.modelos[i];
     if (!b.dataset.sure) { b.dataset.sure = 1; b.textContent = '¿Seguro?'; return; }
@@ -216,12 +216,15 @@ $('#list').addEventListener('click', e => {
 /* ---------- Subir modelo ---------- */
 function loadFile(f) {
   if (!f) return; if (!/\.stl$/i.test(f.name)) { status('El archivo debe ser .stl', 'bad', 4000); return; }
-  if (f.size > 60 * 1048576) status('Archivo grande: se comprimirá al publicar, pero puede tardar en cargar en celulares.', '', 6000);
-  $('#fname').textContent = f.name + ' · ' + (f.size / 1048576).toFixed(1) + ' MB';
   if (!$('#mname').value) $('#mname').value = f.name.replace(/\.stl$/i, '').replace(/[_-]+/g, ' ');
+  $('#fname').textContent = 'Optimizando ' + f.name + '…';
   const r = new FileReader();
-  r.onload = () => { try { stlBuf = r.result; geom = Visor.parseSTL(stlBuf); if (!viewer) viewer = Visor.create($('#stage')); viewer.show(geom, $('#mcolor').value, rot()); $('#smsg').style.display = 'none'; }
-    catch (e) { stlBuf = geom = null; $('#smsg').style.display = ''; $('#smsg').textContent = e.message; } };
+  r.onload = () => setTimeout(() => { try {
+      const raw = Visor.parseSTL(r.result), t0 = Visor.tris(raw);
+      geom = Visor.optimize(raw, t0 > 250000 ? 350 : 4000); stlBuf = true;   // los modelos muy densos se aligeran; los demás solo se compactan
+      $('#fname').textContent = `${f.name}: ${size(f.size)} → ${size(Visor.encode(geom).byteLength)} para la web · ${fmtN(t0)} → ${fmtN(Visor.tris(geom))} triángulos`;
+      if (!viewer) viewer = Visor.create($('#stage')); viewer.show(geom, $('#mcolor').value, rot()); $('#smsg').style.display = 'none';
+    } catch (e) { stlBuf = geom = null; $('#smsg').style.display = ''; $('#smsg').textContent = e.message; $('#fname').textContent = f.name; } }, 30);
   r.readAsArrayBuffer(f);
 }
 $('#pick').onclick = () => $('#stl').click();
@@ -251,8 +254,8 @@ $('#mf').addEventListener('submit', e => { e.preventDefault();
   const v = Date.now().toString(36), looksChanged = old && (old.color !== color || (old.rotX || 0) !== r.x || (old.rotY || 0) !== r.y);
   run((old ? 'Guardando ' : 'Comprimiendo y publicando ') + name, async () => {
     if (stlBuf) {
-      const gz = await Visor.gzip(stlBuf), data = gz || stlBuf, stl = `modelos/${m.id}-${v}.stl` + (gz ? '.gz' : '');
-      if (data.byteLength > 95 * 1048576) throw new Error(`el STL pesa ${(data.byteLength / 1048576).toFixed(0)} MB aun comprimido y GitHub acepta hasta 100 MB por archivo. Simplifícalo en tu slicer`);
+      const raw = Visor.encode(geom), gz = await Visor.gzip(raw), data = gz || raw, stl = `modelos/${m.id}-${v}.dgm` + (gz ? '.gz' : '');
+      if (data.byteLength > 95 * 1048576) throw new Error(`el modelo pesa ${(data.byteLength / 1048576).toFixed(0)} MB aun optimizado y GitHub acepta hasta 100 MB por archivo`);
       files.push({ path: stl, base64: b64(data) });
       if (old) remove.push(old.stl);
       m.stl = stl;
@@ -276,35 +279,45 @@ $('#bf').addEventListener('submit', e => { e.preventDefault();
 });
 
 /* ---------- Portada ---------- */
-let pBuf = null, pGeom = null, pView = null;
+let pBuf = null, pRaw = null, pGeom = null, pView = null;
+const size = n => n > 1048576 ? (n / 1048576).toFixed(1) + ' MB' : Math.max(1, Math.round(n / 1024)) + ' KB';
+const fmtN = n => n >= 1e6 ? (n / 1e6).toFixed(1) + ' M' : n >= 1e3 ? Math.round(n / 1e3) + ' mil' : String(n);
 const prot = () => ({ x: +$('#prx').value, y: +$('#pry').value });
 function pSetRot(x, y) { $('#prx').value = x; $('#pry').value = y; $('#pox').textContent = x + '°'; $('#poy').textContent = y + '°'; if (pView) pView.setRotation(x, y); }
 ['prx', 'pry'].forEach(id => $('#' + id).addEventListener('input', () => pSetRot(+$('#prx').value, +$('#pry').value)));
 $('#pcolor').addEventListener('input', e => pView && pView.setColor(e.target.value));
-function pShow(buf) { pGeom = Visor.parseSTL(buf); if (!pView) pView = Visor.create($('#pstage'), { hero: true }); pView.show(pGeom, $('#pcolor').value, prot()); $('#pmsg').style.display = 'none'; }
+function pShow(g) { pGeom = g; if (!pView) pView = Visor.create($('#pstage'), { hero: true }); pView.show(pGeom, $('#pcolor').value, prot()); $('#pmsg').style.display = 'none'; }
+function pOptimize() {
+  if (!pRaw) return; const c = +$('#pdet').value; $('#podet').textContent = c;
+  const g = Visor.optimize(pRaw, c), bytes = Visor.encode(g).byteLength; pBuf = true;
+  $('#pinfo').textContent = `Original: ${fmtN(Visor.tris(pRaw))} triángulos · Optimizado: ${fmtN(Visor.tris(g))} triángulos, unos ${size(bytes * 0.75)} para descargar.`;
+  pShow(g);
+}
+$('#pdet').addEventListener('input', e => $('#podet').textContent = e.target.value);
+$('#pdet').addEventListener('change', () => { $('#pinfo').textContent = 'Optimizando…'; setTimeout(pOptimize, 30); });
 function loadPortada() {
   const p = CAT.negocio.portada; if (!p) return;
-  $('#pcolor').value = p.color || '#f3eee8'; $('#pcred').value = p.credito || ''; pSetRot(p.rotX || 0, p.rotY || 0);
+  $('#pcolor').value = p.color || '#f3eee8'; pSetRot(p.rotX || 0, p.rotY || 0);
   $('#pmsg').textContent = 'Cargando portada…';
-  Visor.fetchSTL(rawUrl(p.stl)).then(pShow).catch(() => { $('#pmsg').textContent = 'Portada guardada (no se pudo previsualizar aquí)'; });
+  Visor.load(rawUrl(p.stl)).then(pShow).catch(() => { $('#pmsg').textContent = 'Portada guardada (no se pudo previsualizar aquí)'; });
 }
 $('#ppick').onclick = () => $('#pstl').click();
 $('#pstl').addEventListener('change', e => { const f = e.target.files[0]; if (!f) return; $('#pname').textContent = f.name + ' · ' + (f.size / 1048576).toFixed(1) + ' MB';
-  if (f.size > 30 * 1048576) status('Portada pesada: para que la página abra rápido en celulares, usa una versión simplificada (menos de 10 MB).', '', 8000);
-  const r = new FileReader(); r.onload = () => { try { pBuf = r.result; pShow(pBuf); } catch (err) { pBuf = null; $('#pmsg').style.display = ''; $('#pmsg').textContent = err.message; } }; r.readAsArrayBuffer(f); });
+  $('#pinfo').textContent = 'Leyendo y optimizando el modelo…';
+  const r = new FileReader(); r.onload = () => setTimeout(() => { try { pRaw = Visor.parseSTL(r.result); pOptimize(); } catch (err) { pBuf = pRaw = null; $('#pmsg').style.display = ''; $('#pmsg').textContent = err.message; } }, 30); r.readAsArrayBuffer(f); });
 $('#pf').addEventListener('submit', e => { e.preventDefault();
   const old = CAT.negocio.portada;
   if (!pBuf && !old) { status('Primero elige el STL de portada.', 'bad', 4000); return; }
   run('Guardando portada', async () => {
     const files = [], remove = [], r = prot();
-    const p = { ...(old || {}), color: $('#pcolor').value, credito: $('#pcred').value.trim(), rotX: r.x, rotY: r.y };
+    const p = { ...(old || {}), color: $('#pcolor').value, rotX: r.x, rotY: r.y }; delete p.credito;
     if (pBuf) {
-      const gz = await Visor.gzip(pBuf), data = gz || pBuf, path = 'modelos/portada-' + Date.now().toString(36) + '.stl' + (gz ? '.gz' : '');
+      const raw = Visor.encode(pGeom), gz = await Visor.gzip(raw), data = gz || raw, path = 'modelos/portada-' + Date.now().toString(36) + '.dgm' + (gz ? '.gz' : '');
       if (data.byteLength > 95 * 1048576) throw new Error('la portada pesa más de 95 MB aun comprimida');
       files.push({ path, base64: b64(data) }); if (old) remove.push(old.stl); p.stl = path;
     }
     CAT.negocio.portada = p; files.push(catFile());
-    await commit('Actualizar portada', files, remove); pBuf = null;
+    await commit('Actualizar portada', files, remove); pBuf = pRaw = null;
   });
 });
 $('#pdel').onclick = e => { const old = CAT.negocio.portada; if (!old) return;

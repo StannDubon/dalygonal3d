@@ -24,14 +24,75 @@
     const g = new THREE.BufferGeometry();
     g.setAttribute('position', new THREE.BufferAttribute(pos, 3));
     g.rotateX(-Math.PI / 2);               // STL usa Z hacia arriba
+    return prep(g);
+  }
+
+  /* Centra la pieza, la apoya sobre la cama y calcula normales y límites. */
+  function prep(g) {
     g.computeBoundingBox();
     const b = g.boundingBox, c = new THREE.Vector3();
     b.getCenter(c);
-    g.translate(-c.x, -b.min.y, -c.z);     // apoyado sobre la cama, centrado
+    g.translate(-c.x, -b.min.y, -c.z);
     g.computeVertexNormals();
-    g.computeBoundingSphere();
+    g.computeBoundingBox(); g.computeBoundingSphere();
     return g;
   }
+
+  const tris = g => (g.index ? g.index.count : g.attributes.position.count) / 3;
+
+  /* Optimización para la web: agrupa vértices en una rejilla de "cells" divisiones
+     (vertex clustering). Une los vértices repetidos del STL y, si la rejilla es
+     gruesa, reduce triángulos manteniendo la forma. Devuelve geometría indexada. */
+  function optimize(g, cells) {
+    const src = g.index ? g.toNonIndexed() : g, P = src.attributes.position.array;
+    src.computeBoundingBox();
+    const b = src.boundingBox, size = Math.max(b.max.x - b.min.x, b.max.y - b.min.y, b.max.z - b.min.z) || 1;
+    const q = cells / size, K = cells + 2, map = new Map(), sum = [], cnt = [], idx = [];
+    const n = P.length / 3, tri = [0, 0, 0];
+    for (let v = 0; v < n; v++) {
+      const x = P[v * 3], y = P[v * 3 + 1], z = P[v * 3 + 2];
+      const key = Math.round((x - b.min.x) * q) + K * (Math.round((y - b.min.y) * q) + K * Math.round((z - b.min.z) * q));
+      let id = map.get(key);
+      if (id === undefined) { id = cnt.length; map.set(key, id); cnt.push(0); sum.push(0, 0, 0); }
+      cnt[id]++; sum[id * 3] += x; sum[id * 3 + 1] += y; sum[id * 3 + 2] += z;
+      tri[v % 3] = id;
+      if (v % 3 === 2 && tri[0] !== tri[1] && tri[1] !== tri[2] && tri[0] !== tri[2]) idx.push(tri[0], tri[1], tri[2]);
+    }
+    const pos = new Float32Array(cnt.length * 3);
+    for (let i = 0; i < cnt.length; i++) { pos[i * 3] = sum[i * 3] / cnt[i]; pos[i * 3 + 1] = sum[i * 3 + 1] / cnt[i]; pos[i * 3 + 2] = sum[i * 3 + 2] / cnt[i]; }
+    const out = new THREE.BufferGeometry();
+    out.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+    out.setIndex(new THREE.BufferAttribute(cnt.length > 65535 ? new Uint32Array(idx) : new Uint16Array(idx), 1));
+    return prep(out);
+  }
+
+  /* Formato propio y compacto (.dgm): posiciones en 16 bits + índices.
+     Pesa unas 10 veces menos que un STL con la misma malla. */
+  function encode(g) {
+    const P = g.attributes.position.array, I = g.index.array, v = P.length / 3, t = I.length / 3;
+    const b = g.boundingBox, mn = [b.min.x, b.min.y, b.min.z], ext = [b.max.x - mn[0] || 1, b.max.y - mn[1] || 1, b.max.z - mn[2] || 1];
+    const wide = v > 65535, posBytes = v * 6, pad = (4 - (posBytes % 4)) % 4;
+    const buf = new ArrayBuffer(40 + posBytes + pad + t * 3 * (wide ? 4 : 2));
+    const dv = new DataView(buf);
+    [68, 71, 77, 49].forEach((c, i) => dv.setUint8(i, c));     // "DGM1"
+    dv.setUint32(4, v, true); dv.setUint32(8, t, true); dv.setUint32(12, wide ? 1 : 0, true);
+    for (let k = 0; k < 3; k++) { dv.setFloat32(16 + k * 4, mn[k], true); dv.setFloat32(28 + k * 4, ext[k], true); }
+    const q = new Uint16Array(buf, 40, v * 3);
+    for (let i = 0; i < v * 3; i++) q[i] = Math.round((P[i] - mn[i % 3]) / ext[i % 3] * 65535);
+    (wide ? new Uint32Array(buf, 40 + posBytes + pad, t * 3) : new Uint16Array(buf, 40 + posBytes + pad, t * 3)).set(I);
+    return buf;
+  }
+  function decode(buf) {
+    const dv = new DataView(buf), v = dv.getUint32(4, true), t = dv.getUint32(8, true), wide = dv.getUint32(12, true) === 1;
+    const mn = [0, 1, 2].map(k => dv.getFloat32(16 + k * 4, true)), ext = [0, 1, 2].map(k => dv.getFloat32(28 + k * 4, true));
+    const posBytes = v * 6, pad = (4 - (posBytes % 4)) % 4, q = new Uint16Array(buf, 40, v * 3), P = new Float32Array(v * 3);
+    for (let i = 0; i < v * 3; i++) P[i] = mn[i % 3] + q[i] / 65535 * ext[i % 3];
+    const I = wide ? new Uint32Array(buf, 40 + posBytes + pad, t * 3) : new Uint16Array(buf, 40 + posBytes + pad, t * 3);
+    const g = new THREE.BufferGeometry();
+    g.setAttribute('position', new THREE.BufferAttribute(P, 3)); g.setIndex(new THREE.BufferAttribute(I.slice(), 1));
+    return prep(g);
+  }
+  const isDGM = buf => buf.byteLength > 40 && new Uint8Array(buf, 0, 4).every((c, i) => c === [68, 71, 77, 49][i]);
 
   function buildScene(geom, color, rot, hero) {
     const scene = new THREE.Scene();
@@ -173,5 +234,8 @@
     return new Response(new Blob([buf]).stream().pipeThrough(new CompressionStream('gzip'))).arrayBuffer();
   }
 
-  window.Visor = { parseSTL, create, thumbnail, fetchSTL, gzip };
+  /* Abre cualquier modelo publicado: .dgm, .stl, comprimidos o no. */
+  async function load(url) { const buf = await fetchSTL(url); return isDGM(buf) ? decode(buf) : parseSTL(buf); }
+
+  window.Visor = { parseSTL, create, thumbnail, fetchSTL, gzip, optimize, encode, decode, load, tris };
 })();

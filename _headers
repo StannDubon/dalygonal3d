@@ -1,0 +1,5 @@
+# Netlify: los modelos llevan versión en el nombre, así que el navegador puede guardarlos para siempre
+/modelos/*
+  Cache-Control: public, max-age=31536000, immutable
+/catalogo.json
+  Cache-Control: no-cache
