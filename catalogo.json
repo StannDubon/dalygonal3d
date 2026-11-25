@@ -15,6 +15,17 @@
   },
   "modelos": [
     {
+      "id": "ocarina-bsmv",
+      "nombre": "Ocarina",
+      "precio": 8,
+      "descripcion": "Incluye el collar de la trifuerza y un stand opcional por 3 dolares extra",
+      "color": "#2842f7",
+      "rotX": -50,
+      "rotY": 120,
+      "stl": "modelos/ocarina-bsmv-mwvkfm84.dgm.gz",
+      "miniatura": "modelos/ocarina-bsmv-mwvkfm84.png"
+    },
+    {
       "id": "hello-kitty-fresita-3hqr",
       "nombre": "Hello Kitty Fresita",
       "precio": 4,
