@@ -151,6 +151,10 @@
     {
       "id": "personalizados",
       "nombre": "Personalizados"
+    },
+    {
+      "id": "llaverp",
+      "nombre": "Llaverp"
     }
   ]
 }
