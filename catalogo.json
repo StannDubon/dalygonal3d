@@ -16,6 +16,17 @@
   },
   "modelos": [
     {
+      "id": "gengar-nowatermark-v2-lihf",
+      "nombre": "Gengar nowatermark v2",
+      "precio": 3,
+      "descripcion": "",
+      "color": "#4f4fd0",
+      "rotX": 0,
+      "rotY": -10,
+      "stl": "modelos/gengar-nowatermark-v2-lihf-mwvj4h6s.stl.gz",
+      "miniatura": "modelos/gengar-nowatermark-v2-lihf-mwvj4h6s.png"
+    },
+    {
       "id": "maceta-torcida",
       "nombre": "Maceta torcida",
       "precio": 8,
