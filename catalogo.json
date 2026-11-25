@@ -15,6 +15,18 @@
   },
   "modelos": [
     {
+      "id": "pico-de-minecraft-fdux",
+      "nombre": "Pico de Minecraft",
+      "precio": 2,
+      "descripcion": "Si hay que ser minero, romper el pico en el hierro",
+      "color": "#79a4bd",
+      "rotX": 0,
+      "rotY": 150,
+      "categoria": "",
+      "stl": "modelos/pico-de-minecraft-fdux-mwvllgbv.dgm.gz",
+      "miniatura": "modelos/pico-de-minecraft-fdux-mwvllgbv.png"
+    },
+    {
       "id": "pulpo-articulable-qmox",
       "nombre": "Pulpo Articulable",
       "precio": 4,
