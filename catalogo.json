@@ -15,6 +15,17 @@
   },
   "modelos": [
     {
+      "id": "onix-articulable-084i",
+      "nombre": "Onix Articulable",
+      "precio": 5,
+      "descripcion": "",
+      "color": "#525252",
+      "rotX": 0,
+      "rotY": 60,
+      "stl": "modelos/onix-articulable-084i-mwvk48og.dgm.gz",
+      "miniatura": "modelos/onix-articulable-084i-mwvk48og.png"
+    },
+    {
       "id": "gengar-r9mz",
       "nombre": "Gengar",
       "precio": 3,
