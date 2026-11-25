@@ -7,10 +7,10 @@
       "50376025974"
     ],
     "portada": {
-      "stl": "modelos/portada-ejemplo.stl",
+      "stl": "modelos/portada-mwvjaarx.stl.gz",
       "color": "#f3eee8",
       "rotX": 0,
-      "rotY": 0,
+      "rotY": 95,
       "credito": "Nudo poligonal de ejemplo (Dalygonal). Reemplázalo desde el panel"
     }
   },
