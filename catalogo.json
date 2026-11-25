@@ -15,6 +15,17 @@
   },
   "modelos": [
     {
+      "id": "cubo-infinito-mytl",
+      "nombre": "Cubo infinito",
+      "precio": 6,
+      "descripcion": "",
+      "color": "#b19a6d",
+      "rotX": 0,
+      "rotY": 55,
+      "stl": "modelos/cubo-infinito-mytl-mwvku9jz.dgm.gz",
+      "miniatura": "modelos/cubo-infinito-mytl-mwvku9jz.png"
+    },
+    {
       "id": "karambit-xfow",
       "nombre": "karambit",
       "precio": 3,
