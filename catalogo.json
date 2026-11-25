@@ -13,5 +13,17 @@
       "rotY": 65
     }
   },
-  "modelos": []
+  "modelos": [
+    {
+      "id": "gengar-r9mz",
+      "nombre": "Gengar",
+      "precio": 3,
+      "descripcion": "",
+      "color": "#605ac5",
+      "rotX": 0,
+      "rotY": 15,
+      "stl": "modelos/gengar-r9mz-mwvk26fc.dgm.gz",
+      "miniatura": "modelos/gengar-r9mz-mwvk26fc.png"
+    }
+  ]
 }
