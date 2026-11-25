@@ -25,17 +25,6 @@
       "rotY": 40,
       "stl": "modelos/gengar-nowatermark-v2-lihf-mwvj7v4s.stl.gz",
       "miniatura": "modelos/gengar-nowatermark-v2-lihf-mwvj7v4s.png"
-    },
-    {
-      "id": "lampara-facetada",
-      "nombre": "Lámpara facetada",
-      "precio": 15,
-      "descripcion": "Modelo de ejemplo. Pantalla de 8 cm estilo low-poly.",
-      "color": "#ffd23f",
-      "stl": "modelos/lampara-facetada.stl",
-      "miniatura": "",
-      "rotX": 0,
-      "rotY": 0
     }
   ]
 }
