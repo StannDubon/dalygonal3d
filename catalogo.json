@@ -56,7 +56,8 @@
       "rotX": 0,
       "rotY": 180,
       "stl": "modelos/lagarto-articulable-93ka-mwvkkv0g.dgm.gz",
-      "miniatura": "modelos/lagarto-articulable-93ka-mwvkkv0g.png"
+      "miniatura": "modelos/lagarto-articulable-93ka-mwvkkv0g.png",
+      "categoria": "figuras"
     },
     {
       "id": "jarrones-de-punto-texturizado-sllj",
