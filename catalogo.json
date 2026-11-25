@@ -15,6 +15,17 @@
   },
   "modelos": [
     {
+      "id": "hello-kitty-fresita-3hqr",
+      "nombre": "Hello Kitty Fresita",
+      "precio": 4,
+      "descripcion": "",
+      "color": "#bc6392",
+      "rotX": 90,
+      "rotY": 20,
+      "stl": "modelos/hello-kitty-fresita-3hqr-mwvk7kbo.dgm.gz",
+      "miniatura": "modelos/hello-kitty-fresita-3hqr-mwvk7kbo.png"
+    },
+    {
       "id": "onix-articulable-084i",
       "nombre": "Onix Articulable",
       "precio": 5,
