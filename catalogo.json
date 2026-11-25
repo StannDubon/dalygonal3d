@@ -15,6 +15,17 @@
   },
   "modelos": [
     {
+      "id": "pulpo-articulable-qmox",
+      "nombre": "Pulpo Articulable",
+      "precio": 6,
+      "descripcion": "",
+      "color": "#b06fab",
+      "rotX": 0,
+      "rotY": 0,
+      "stl": "modelos/pulpo-articulable-qmox-mwvkv48e.dgm.gz",
+      "miniatura": "modelos/pulpo-articulable-qmox-mwvkv48e.png"
+    },
+    {
       "id": "cubo-infinito-mytl",
       "nombre": "Cubo infinito",
       "precio": 6,
