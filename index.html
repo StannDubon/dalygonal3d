@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dalygonal : 3D Prints</title>
+<meta name="description" content="Dalygonal : 3D Prints. Piezas impresas en 3D en El Salvador. Mira cada modelo en 3D y pídelo por WhatsApp.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* VOICE: taller con carácter de artista; atrevido, juguetón, surrealista.
+   IDEA: Dalí hecho de polígonos: un rostro low-poly con bigote retorcido y un reloj que se derrite.
+   PICTURE: el rostro poligonal en la cabecera; luego cada modelo girando en 3D.
+   COLOUR and TYPE: fucsia eléctrico dominante, amarillo sol de apoyo, tinta casi negra; Syne + Inter.
+   LAYOUT: cabecera fucsia a todo el ancho, rejilla de modelos, contacto al pie, botón de WhatsApp fijo. */
+:root{color-scheme:light dark;
+--bg:light-dark(#ffffff,#150a1c);--ink:light-dark(#1a0f24,#f6eff8);--mut:light-dark(#6b5a75,#bba8c4);
+--line:light-dark(#efe4ef,#33203d);--card:light-dark(#ffffff,#1e1027);--soft:light-dark(#fbf3f7,#26142f);
+--main:#ff1f6b;--main2:#d9004f;--sun:#ffd23f;--wa:#1f9d55}
+:root[data-theme=light]{color-scheme:light}:root[data-theme=dark]{color-scheme:dark}
+*{box-sizing:border-box;min-width:0}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 Inter,system-ui,sans-serif;overflow-x:clip}
+h1,h2,h3{font-family:Syne,Inter,sans-serif;line-height:1.05;text-wrap:balance;margin:0}
+h1{font-size:clamp(44px,7.5vw,84px);font-weight:800;letter-spacing:-.02em}h1 small{display:block;font-size:.36em;letter-spacing:0;color:var(--sun);margin-top:6px}h2{font-size:32px}h3{font-size:19px}
+.band{padding:clamp(28px,4vw,60px) max(5vw,16px)}.wrap{max-width:1240px;margin:0 auto}
+header{background:var(--main);color:#fff;position:relative;overflow:hidden;min-height:min(92vh,780px);display:flex;align-items:center}
+#bg{position:absolute;inset:0;width:100%;height:100%;display:block}
+header .wrap{position:relative;width:100%}
+.hero{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);gap:28px;align-items:center}
+.hero p{font-size:18px;opacity:.95;max-width:46ch;margin:14px 0 22px;text-shadow:0 1px 12px rgba(120,0,40,.35)}
+.hstage{position:relative;aspect-ratio:1/1;max-height:min(70vh,600px);width:100%;margin-inline:auto}
+.hstage>svg{position:absolute;inset:8%;width:84%;height:84%;transition:opacity .6s}
+.hstage canvas{position:absolute;inset:0}
+.hstage.live>svg{opacity:0}
+.hint3d{position:absolute;z-index:1;bottom:4%;left:50%;transform:translateX(-50%);font-size:13px;background:rgba(26,15,36,.35);padding:4px 12px;border-radius:999px;white-space:nowrap;opacity:0;transition:opacity .6s;pointer-events:none}
+.hstage.live .hint3d{opacity:1}
+.credit{font-size:13px;color:var(--mut);margin-top:18px}
+@media(prefers-reduced-motion:no-preference){
+ .intro h1,.intro .hero p,.intro .acts{animation:rise .9s cubic-bezier(.2,.7,.2,1) both}
+ .intro .hero p{animation-delay:.15s}.intro .acts{animation-delay:.3s}
+ .intro h1 small{animation:rise .9s .08s cubic-bezier(.2,.7,.2,1) both}
+ .intro #bg{animation:fade 1.4s ease both}}
+@keyframes rise{from{opacity:0;transform:translateY(28px)}}@keyframes fade{from{opacity:0}}
+.btn{font:inherit;font-weight:600;font-size:16px;display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:10px 18px;border-radius:999px;border:1px solid transparent;text-decoration:none;cursor:pointer;color:inherit;background:var(--soft)}
+.btn.wa{background:var(--wa);color:#fff}.btn.rose{background:var(--sun);color:#1a0f24}.btn.ghost{background:transparent;border-color:rgba(255,255,255,.5);color:#fff}
+.btn svg{width:18px;height:18px;flex:none}
+:focus-visible{outline:3px solid var(--sun);outline-offset:2px}
+.acts{display:flex;gap:10px;flex-wrap:wrap}
+.bar{display:flex;gap:12px;align-items:end;justify-content:space-between;flex-wrap:wrap;margin-bottom:22px}
+input{font:inherit;font-size:16px;color:inherit;background:var(--card);border:1px solid var(--line);border-radius:999px;padding:10px 18px;min-height:44px;width:min(320px,100%)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:18px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;overflow:hidden;display:flex;flex-direction:column}
+.thumb{aspect-ratio:4/3;background:radial-gradient(circle at 50% 40%,light-dark(#fff,#2e1838),var(--soft));display:grid;place-items:center;border:0;padding:0;cursor:pointer;width:100%;position:relative;color:var(--mut)}
+.thumb img{width:100%;height:100%;object-fit:contain}
+.thumb .see{position:absolute;right:10px;bottom:10px;background:var(--main);color:#fff;font-size:13px;font-weight:600;padding:4px 10px;border-radius:999px}
+.card .b{padding:14px 16px 16px;display:flex;flex-direction:column;gap:6px;flex:1}
+.desc{color:var(--mut);font-size:15px}
+.price{font-family:Syne;font-weight:800;font-size:24px;white-space:nowrap}
+.row{display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap;margin-top:auto;padding-top:8px}
+.state{padding:48px 20px;text-align:center;color:var(--mut);border:2px dashed var(--line);border-radius:18px;grid-column:1/-1}
+footer{background:var(--soft)}
+.contact{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:24px;align-items:center}
+.nums{display:grid;gap:10px}
+.num{display:flex;justify-content:space-between;align-items:center;gap:12px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 12px 12px 18px;flex-wrap:wrap}
+.num b{font-family:Syne;font-size:22px;white-space:nowrap}
+#fab{position:fixed;right:16px;bottom:16px;width:58px;height:58px;border-radius:50%;background:var(--wa);display:grid;place-items:center;box-shadow:0 8px 24px rgba(0,0,0,.25);z-index:4}
+#fab svg{width:30px;height:30px}
+dialog{border:0;border-radius:22px;padding:0;width:min(920px,calc(100% - 20px));max-height:calc(100% - 20px);background:var(--bg);color:var(--ink)}
+dialog::backdrop{background:rgba(26,15,36,.65)}
+.dlg{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr)}
+.stage{aspect-ratio:1/1;max-height:70vh;width:100%;background:radial-gradient(circle at 50% 35%,light-dark(#fff,#2e1838),var(--soft));position:relative}
+.rot{display:grid;gap:8px;background:var(--soft);border-radius:14px;padding:12px 14px}
+.rot label{display:grid;grid-template-columns:5.5em minmax(0,1fr) 3.2em;align-items:center;gap:10px;font-size:14px;font-weight:600}
+.rot output{text-align:right;font-variant-numeric:tabular-nums;color:var(--mut)}
+input[type=range]{accent-color:var(--main);width:100%;min-height:32px;padding:0;border:0;background:none}
+.stage .msg{position:absolute;inset:0;display:grid;place-items:center;color:var(--mut);pointer-events:none;padding:20px;text-align:center}
+.side{padding:24px;display:flex;flex-direction:column;gap:12px}
+.close{align-self:flex-end}
+.hint{font-size:14px;color:var(--mut)}
+@media(max-width:720px){.dlg{grid-template-columns:minmax(0,1fr)}.stage{max-height:52vh}}
+@media(max-width:600px){.hero,.contact{grid-template-columns:minmax(0,1fr)}header{min-height:0}.hstage{max-height:52vh;max-width:420px}}
+@media(prefers-reduced-motion:no-preference){.facet{animation:in .9s cubic-bezier(.2,.7,.2,1) both}}
+@keyframes in{from{opacity:0;transform:translateY(14px)}}
+</style>
+</head>
+<body>
+<header class="band intro"><canvas id="bg" aria-hidden="true"></canvas><div class="wrap hero">
+  <div>
+    <h1 id="brand">Dalygonal<small>: 3D Prints</small></h1>
+    <p id="tag">Arte surreal impreso en polígonos. Mira cada pieza en 3D, gírala y pídela por WhatsApp.</p>
+    <div class="acts"><a class="btn rose" href="#catalogo">Ver modelos</a><a class="btn ghost" href="#contacto">Contacto</a></div>
+  </div>
+  <div class="hstage" id="hstage">
+  <svg viewBox="0 0 400 320" role="img" aria-label="Rostro poligonal con bigote surrealista">
+    <ellipse cx="200" cy="300" rx="150" ry="12" fill="#1a0f24" opacity=".22"/>
+    <g class="facet"><polygon points="200,18 288,62 250,140 160,120" fill="#ffd23f"/><polygon points="200,18 160,120 108,70" fill="#ffe680"/></g>
+    <g class="facet" style="animation-delay:.1s"><polygon points="288,62 318,160 250,140" fill="#f2b400"/><polygon points="108,70 160,120 92,170" fill="#fff3c4"/></g>
+    <g class="facet" style="animation-delay:.2s"><polygon points="160,120 250,140 222,224 140,210" fill="#ffc21a"/><polygon points="92,170 160,120 140,210" fill="#ffe27a"/><polygon points="250,140 318,160 290,236 222,224" fill="#e3a200"/></g>
+    <g class="facet" style="animation-delay:.3s"><polygon points="140,210 222,224 200,276 150,262" fill="#f0b000"/><polygon points="222,224 290,236 200,276" fill="#cf8f00"/></g>
+    <path d="M150 262 q-4 22 6 30 q8 -10 4 -32z" fill="#cf8f00"/><path d="M262 246 q2 26 -6 40 q-10 -14 -6 -38z" fill="#e3a200"/>
+    <g fill="#fff"><polygon points="150,96 186,92 182,112 154,114"/><polygon points="226,100 258,104 252,122 224,118"/></g>
+    <g fill="#1a0f24"><circle cx="170" cy="103" r="7"/><circle cx="241" cy="111" r="7"/></g>
+    <path d="M204 176 C184 178 158 176 142 154 C132 140 130 118 140 96 M204 176 C224 178 252 174 268 150 C278 134 282 112 274 90" stroke="#1a0f24" stroke-width="6" fill="none" stroke-linecap="round"/><path d="M188 176 q16 -8 32 0" stroke="#1a0f24" stroke-width="9" fill="none" stroke-linecap="round"/>
+    <polygon points="196,128 214,132 210,172 192,168" fill="#cf8f00"/>
+  </svg>
+    <span class="hint3d">Arrastra para girar</span>
+  </div>
+</div></header>
+
+<main class="band" id="catalogo"><div class="wrap">
+  <div class="bar"><h2>Modelos disponibles</h2><input id="q" type="search" placeholder="Buscar modelo…" aria-label="Buscar modelo"></div>
+  <div class="grid" id="grid"><div class="state">Cargando modelos…</div></div>
+</div></main>
+
+<footer class="band" id="contacto"><div class="wrap contact">
+  <div><h2>¿Quieres algo a la medida?</h2><p class="hint" style="font-size:17px">Escríbenos por WhatsApp: personalizamos nombres, colores y tamaños, y también imprimimos tu propio diseño.</p></div>
+  <div class="nums" id="nums"></div>
+  <p class="credit full" id="credit" hidden></p>
+</div></footer>
+
+<a id="fab" href="#" target="_blank" rel="noopener" aria-label="Escribir por WhatsApp"></a>
+
+<dialog id="dlg"><div class="dlg">
+  <div class="stage" id="stage"><div class="msg" id="smsg">Cargando modelo 3D…</div></div>
+  <div class="side">
+    <button class="btn close" id="close">Cerrar</button>
+    <h2 id="dname" style="font-size:28px"></h2>
+    <div class="price" id="dprice"></div>
+    <p class="desc" id="ddesc" style="margin:0"></p>
+    <div class="rot">
+      <label for="rx">Girar en X<input type="range" id="rx" min="-180" max="180" step="5" value="0"><output id="ox">0°</output></label>
+      <label for="ry">Girar en Y<input type="range" id="ry" min="-180" max="180" step="5" value="0"><output id="oy">0°</output></label>
+      <button class="btn" id="rreset" style="justify-self:start;min-height:38px;padding:6px 14px">Restablecer</button>
+    </div>
+    <p class="hint" style="margin:0">También puedes arrastrar para girar y usar la rueda o pellizcar para acercar</p>
+    <div class="nums" id="dnums"></div>
+  </div>
+</div></dialog>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="visor.js"></script>
+<script>
+{
+const $ = s => document.querySelector(s);
+const esc = v => String(v ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const money = n => '$' + Number(n || 0).toFixed(2);
+const WA_ICON = '<svg viewBox="0 0 24 24" fill="#fff" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8s-.4-.1-.6.1-.7.8-.8 1-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.3-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.5 4c1.7.7 2.3.8 3.2.6a2.7 2.7 0 0 0 1.8-1.2 2.2 2.2 0 0 0 .1-1.3c0-.1-.2-.2-.4-.3z"/></svg>';
+let DATA = { negocio: { nombre: 'Dalygonal : 3D Prints', frase: '', whatsapp: ['50378541821', '50376025974'] }, modelos: [] };
+let viewer = null, current = null;
+
+const pretty = n => { const d = String(n).replace(/\D/g, '').replace(/^503/, ''); return '+503 ' + d.slice(0, 4) + ' ' + d.slice(4); };
+const waLink = (n, txt) => 'https://wa.me/' + String(n).replace(/\D/g, '') + '?text=' + encodeURIComponent(txt);
+const short = () => (DATA.negocio.nombre || 'Dalygonal').split(':')[0].trim();
+const msgFor = m => m ? `Hola ${short()}, me interesa el modelo "${m.nombre}" (${money(m.precio)}). ¿Está disponible?` : `Hola ${short()}, quiero información sobre sus impresiones 3D.`;
+function numButtons(m) {
+  return DATA.negocio.whatsapp.map(n => `<div class="num"><b>${esc(pretty(n))}</b><a class="btn wa" href="${esc(waLink(n, msgFor(m)))}" target="_blank" rel="noopener">${WA_ICON}Escribir</a></div>`).join('');
+}
+
+function render() {
+  const q = $('#q').value.trim().toLowerCase();
+  const list = DATA.modelos.filter(m => !q || (m.nombre + ' ' + (m.descripcion || '')).toLowerCase().includes(q));
+  $('#grid').innerHTML = list.length ? list.map(m => `<article class="card">
+      <button class="thumb" data-open="${esc(m.id)}" aria-label="Ver ${esc(m.nombre)} en 3D">${m.miniatura ? `<img src="${esc(m.miniatura)}" alt="" loading="lazy">` : `<span data-auto="${esc(m.id)}">Vista 3D</span>`}<span class="see">Ver en 3D</span></button>
+      <div class="b"><h3>${esc(m.nombre)}</h3>${m.descripcion ? `<div class="desc">${esc(m.descripcion)}</div>` : ''}
+      <div class="row"><span class="price">${money(m.precio)}</span><a class="btn wa" href="${esc(waLink(DATA.negocio.whatsapp[0], msgFor(m)))}" target="_blank" rel="noopener">${WA_ICON}Pedir</a></div></div></article>`).join('')
+    : `<div class="state">${DATA.modelos.length ? 'Ningún modelo coincide con tu búsqueda.' : 'Pronto subiremos nuestros modelos. Mientras tanto, escríbenos por WhatsApp.'}</div>`;
+  autoThumbs();
+}
+
+const geoCache = new Map();
+async function loadGeom(m) {
+  if (geoCache.has(m.id)) return geoCache.get(m.id);
+  const g = Visor.parseSTL(await Visor.fetchSTL(m.stl)); geoCache.set(m.id, g); return g;
+}
+async function autoThumbs() {   // modelos sin miniatura: se dibujan aquí, uno a la vez
+  for (const el of document.querySelectorAll('[data-auto]')) {
+    const m = DATA.modelos.find(x => x.id === el.dataset.auto); if (!m || !window.THREE) continue;
+    try { const url = Visor.thumbnail(await loadGeom(m), m.color, 0, 0, { x: m.rotX, y: m.rotY }); const img = new Image(); img.src = url; img.alt = ''; el.replaceWith(img); } catch (_) { el.textContent = 'Vista no disponible'; }
+  }
+}
+
+async function open(id) {
+  const m = DATA.modelos.find(x => x.id === id); if (!m) return; current = m;
+  $('#dname').textContent = m.nombre; $('#dprice').textContent = money(m.precio); $('#ddesc').textContent = m.descripcion || '';
+  $('#dnums').innerHTML = numButtons(m); setRot(m.rotX || 0, m.rotY || 0, false); $('#smsg').textContent = 'Cargando modelo 3D…'; $('#smsg').style.display = '';
+  $('#dlg').showModal();
+  if (!window.THREE) { $('#smsg').textContent = 'No se pudo cargar el visor 3D. Revisa tu conexión.'; return; }
+  if (!viewer) viewer = Visor.create($('#stage'));
+  try { const g = await loadGeom(m); if (current === m) { viewer.show(g, m.color, { x: m.rotX, y: m.rotY }); $('#smsg').style.display = 'none'; } }
+  catch (e) { $('#smsg').textContent = 'No se pudo cargar este modelo.'; }
+}
+$('#grid').addEventListener('click', e => { const b = e.target.closest('[data-open]'); if (b) open(b.dataset.open); });
+$('#close').onclick = () => $('#dlg').close();
+$('#dlg').addEventListener('click', e => { if (e.target === $('#dlg')) $('#dlg').close(); });
+$('#dlg').addEventListener('close', () => { if (viewer) { viewer.dispose(); viewer = null; } current = null; });
+$('#q').addEventListener('input', render);
+function setRot(x, y, apply = true) { $('#rx').value = x; $('#ry').value = y; $('#ox').textContent = x + '°'; $('#oy').textContent = y + '°'; if (apply && viewer) viewer.setRotation(x, y); }
+['rx', 'ry'].forEach(id => $('#' + id).addEventListener('input', () => setRot(+$('#rx').value, +$('#ry').value)));
+$('#rreset').onclick = () => { setRot(current?.rotX || 0, current?.rotY || 0); if (viewer) viewer.reset(); };
+
+function applyBrand() {
+  const n = DATA.negocio;
+  const full = n.nombre || 'Dalygonal : 3D Prints', cut = full.indexOf(':');
+  $('#brand').textContent = cut > 0 ? full.slice(0, cut).trim() : full;
+  if (cut > 0) { const sm = document.createElement('small'); sm.textContent = full.slice(cut).trim(); $('#brand').appendChild(sm); }
+  if (n.frase) $('#tag').textContent = n.frase;
+  document.title = full;
+  $('#nums').innerHTML = numButtons(null);
+  $('#fab').href = waLink(n.whatsapp[0], msgFor(null)); $('#fab').innerHTML = WA_ICON;
+}
+applyBrand();
+
+/* Fondo poligonal en movimiento */
+(() => {
+  const c = $('#bg'), x = c.getContext('2d'), still = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let W = 0, H = 0, pts = [], cols = 0, rows = 0, on = true, raf = 0;
+  const pal = ['#ff1f6b', '#ff3d7f', '#e8135c', '#ff5a8f', '#d9004f', '#ff6f9c'];
+  function setup() {
+    const r = c.getBoundingClientRect(), dpr = Math.min(2, devicePixelRatio || 1);
+    W = r.width; H = r.height; c.width = W * dpr; c.height = H * dpr; x.setTransform(dpr, 0, 0, dpr, 0, 0);
+    const step = Math.max(80, Math.min(140, W / 9)); cols = Math.ceil(W / step) + 2; rows = Math.ceil(H / step) + 2; pts = [];
+    for (let j = 0; j < rows; j++) for (let i = 0; i < cols; i++)
+      pts.push({ bx: (i - .5) * step + (j % 2 ? step / 2 : 0), by: (j - .5) * step, a: Math.random() * 6.28, sp: .3 + Math.random() * .5, amp: step * (.18 + Math.random() * .14), k: Math.random() });
+  }
+  function draw(t) {
+    x.clearRect(0, 0, W, H);
+    const P = pts.map(p => [p.bx + Math.cos(p.a + t * p.sp) * p.amp, p.by + Math.sin(p.a * 1.3 + t * p.sp * .8) * p.amp]);
+    const id = (i, j) => j * cols + i;
+    for (let j = 0; j < rows - 1; j++) for (let i = 0; i < cols - 1; i++) {
+      const o = j % 2, tris = o ? [[id(i, j), id(i + 1, j), id(i + 1, j + 1)], [id(i, j), id(i + 1, j + 1), id(i, j + 1)]]
+                                : [[id(i, j), id(i + 1, j), id(i, j + 1)], [id(i + 1, j), id(i + 1, j + 1), id(i, j + 1)]];
+      tris.forEach((tr, n) => {
+        const a = P[tr[0]], b = P[tr[1]], d = P[tr[2]], seed = pts[tr[0]].k;
+        const glow = Math.sin(t * .6 + i * .5 - j * .4 + seed * 6) ;
+        x.fillStyle = seed > .94 && n ? 'rgba(255,210,63,' + (.35 + .25 * glow) + ')' : pal[(i * 3 + j * 2 + n) % pal.length];
+        x.globalAlpha = seed > .94 && n ? 1 : .55 + .25 * glow;
+        x.beginPath(); x.moveTo(a[0], a[1]); x.lineTo(b[0], b[1]); x.lineTo(d[0], d[1]); x.closePath(); x.fill();
+      });
+    }
+    x.globalAlpha = 1;
+  }
+  function loop(ts) { if (!on) return; draw(ts / 1000); raf = requestAnimationFrame(loop); }
+  setup(); new ResizeObserver(() => { setup(); if (still) draw(0); }).observe(c);
+  if (still) draw(0); else {
+    new IntersectionObserver(es => { on = es[0].isIntersecting; cancelAnimationFrame(raf); if (on) raf = requestAnimationFrame(loop); }).observe(c);
+    document.addEventListener('visibilitychange', () => { on = !document.hidden; cancelAnimationFrame(raf); if (on) raf = requestAnimationFrame(loop); });
+  }
+})();
+
+/* Modelo de portada (se elige en el panel) */
+let heroViewer = null;
+async function loadHero() {
+  const p = DATA.negocio.portada;
+  if (p && p.credito) { $('#credit').hidden = false; $('#credit').textContent = 'Modelo de portada: ' + p.credito; }
+  if (!p || !p.stl || !window.THREE) return;
+  try {
+    const g = Visor.parseSTL(await Visor.fetchSTL(p.stl));
+    if (!heroViewer) heroViewer = Visor.create($('#hstage'), { hero: true });
+    heroViewer.show(g, p.color || '#f3eee8', { x: p.rotX, y: p.rotY });
+    $('#hstage').classList.add('live');
+  } catch (_) { /* se queda el dibujo */ }
+}
+
+fetch('catalogo.json?v=' + Date.now()).then(r => r.json()).then(d => {
+  DATA = { negocio: Object.assign({}, DATA.negocio, d.negocio), modelos: d.modelos || [] };
+  if (!DATA.negocio.whatsapp?.length) DATA.negocio.whatsapp = ['50378541821', '50376025974'];
+  applyBrand(); render(); loadHero();
+}).catch(() => { $('#grid').innerHTML = '<div class="state">No pudimos cargar el catálogo. Escríbenos por WhatsApp y te ayudamos.</div>'; });
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,41 @@
+{
+  "negocio": {
+    "nombre": "Dalygonal : 3D Prints",
+    "frase": "Arte surreal impreso en polígonos. Mira cada pieza en 3D, gírala y pídela por WhatsApp.",
+    "whatsapp": [
+      "50378541821",
+      "50376025974"
+    ],
+    "portada": {
+      "stl": "modelos/portada-ejemplo.stl",
+      "color": "#f3eee8",
+      "rotX": 0,
+      "rotY": 0,
+      "credito": "Nudo poligonal de ejemplo (Dalygonal). Reemplázalo desde el panel"
+    }
+  },
+  "modelos": [
+    {
+      "id": "maceta-torcida",
+      "nombre": "Maceta torcida",
+      "precio": 8,
+      "descripcion": "Modelo de ejemplo. 9 cm de alto, con pared doble.",
+      "color": "#ff1f6b",
+      "stl": "modelos/maceta-torcida.stl",
+      "miniatura": "",
+      "rotX": 0,
+      "rotY": 0
+    },
+    {
+      "id": "lampara-facetada",
+      "nombre": "Lámpara facetada",
+      "precio": 15,
+      "descripcion": "Modelo de ejemplo. Pantalla de 8 cm estilo low-poly.",
+      "color": "#ffd23f",
+      "stl": "modelos/lampara-facetada.stl",
+      "miniatura": "",
+      "rotX": 0,
+      "rotY": 0
+    }
+  ]
+}
