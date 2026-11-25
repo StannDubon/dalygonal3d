@@ -89,7 +89,8 @@
       "rotX": 90,
       "rotY": 20,
       "stl": "modelos/hello-kitty-fresita-3hqr-mwvk7kbo.dgm.gz",
-      "miniatura": "modelos/hello-kitty-fresita-3hqr-mwvk7kbo.png"
+      "miniatura": "modelos/hello-kitty-fresita-3hqr-mwvk7kbo.png",
+      "categoria": "figuras"
     },
     {
       "id": "onix-articulable-084i",
@@ -112,6 +113,24 @@
       "rotY": 15,
       "stl": "modelos/gengar-r9mz-mwvk26fc.dgm.gz",
       "miniatura": "modelos/gengar-r9mz-mwvk26fc.png"
+    }
+  ],
+  "categorias": [
+    {
+      "id": "figuras",
+      "nombre": "Figuras"
+    },
+    {
+      "id": "cotidianos",
+      "nombre": "Cotidianos"
+    },
+    {
+      "id": "decoracion",
+      "nombre": "Decoración"
+    },
+    {
+      "id": "personalizados",
+      "nombre": "Personalizados"
     }
   ]
 }
