@@ -34,7 +34,8 @@
       "rotX": 0,
       "rotY": 55,
       "stl": "modelos/cubo-infinito-mytl-mwvku9jz.dgm.gz",
-      "miniatura": "modelos/cubo-infinito-mytl-mwvku9jz.png"
+      "miniatura": "modelos/cubo-infinito-mytl-mwvku9jz.png",
+      "categoria": "figuras"
     },
     {
       "id": "karambit-xfow",
