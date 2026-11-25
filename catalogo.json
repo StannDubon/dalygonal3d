@@ -23,7 +23,8 @@
       "rotX": 0,
       "rotY": 0,
       "stl": "modelos/pulpo-articulable-qmox-mwvkv48e.dgm.gz",
-      "miniatura": "modelos/pulpo-articulable-qmox-mwvkv48e.png"
+      "miniatura": "modelos/pulpo-articulable-qmox-mwvkv48e.png",
+      "categoria": "figuras"
     },
     {
       "id": "cubo-infinito-mytl",
