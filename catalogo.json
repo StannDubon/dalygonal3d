@@ -78,7 +78,8 @@
       "rotX": -50,
       "rotY": 120,
       "stl": "modelos/ocarina-bsmv-mwvkfm84.dgm.gz",
-      "miniatura": "modelos/ocarina-bsmv-mwvkfm84.png"
+      "miniatura": "modelos/ocarina-bsmv-mwvkfm84.png",
+      "categoria": "figuras"
     },
     {
       "id": "hello-kitty-fresita-3hqr",
