@@ -15,6 +15,17 @@
   },
   "modelos": [
     {
+      "id": "lagarto-articulable-93ka",
+      "nombre": "Lagarto articulable",
+      "precio": 5,
+      "descripcion": "",
+      "color": "#539951",
+      "rotX": 0,
+      "rotY": 180,
+      "stl": "modelos/lagarto-articulable-93ka-mwvkkv0g.dgm.gz",
+      "miniatura": "modelos/lagarto-articulable-93ka-mwvkkv0g.png"
+    },
+    {
       "id": "jarrones-de-punto-texturizado-sllj",
       "nombre": "Jarrones de punto texturizado",
       "precio": 10,
