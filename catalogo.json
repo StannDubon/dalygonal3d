@@ -15,6 +15,17 @@
   },
   "modelos": [
     {
+      "id": "karambit-xfow",
+      "nombre": "karambit",
+      "precio": 3,
+      "descripcion": "",
+      "color": "#b04f51",
+      "rotX": 180,
+      "rotY": 0,
+      "stl": "modelos/karambit-xfow-mwvktc1m.dgm.gz",
+      "miniatura": "modelos/karambit-xfow-mwvktc1m.png"
+    },
+    {
       "id": "lagarto-articulable-93ka",
       "nombre": "Lagarto articulable",
       "precio": 5,
