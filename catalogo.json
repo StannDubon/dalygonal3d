@@ -15,17 +15,6 @@
   },
   "modelos": [
     {
-      "id": "maceta-torcida",
-      "nombre": "Maceta torcida",
-      "precio": 8,
-      "descripcion": "Modelo de ejemplo. 9 cm de alto, con pared doble.",
-      "color": "#ff1f6b",
-      "stl": "modelos/maceta-torcida.stl",
-      "miniatura": "",
-      "rotX": 0,
-      "rotY": 0
-    },
-    {
       "id": "lampara-facetada",
       "nombre": "Lámpara facetada",
       "precio": 15,
