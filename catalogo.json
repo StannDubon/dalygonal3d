@@ -7,24 +7,24 @@
       "50376025974"
     ],
     "portada": {
-      "stl": "modelos/portada-ejemplo.stl",
+      "stl": "modelos/portada-mwvjaarx.stl.gz",
       "color": "#f3eee8",
       "rotX": 0,
-      "rotY": 0,
+      "rotY": 95,
       "credito": "Nudo poligonal de ejemplo (Dalygonal). Reemplázalo desde el panel"
     }
   },
   "modelos": [
     {
-      "id": "maceta-torcida",
-      "nombre": "Maceta torcida",
-      "precio": 8,
-      "descripcion": "Modelo de ejemplo. 9 cm de alto, con pared doble.",
-      "color": "#ff1f6b",
-      "stl": "modelos/maceta-torcida.stl",
-      "miniatura": "",
+      "id": "gengar-nowatermark-v2-lihf",
+      "nombre": "Gengar nowatermark v2",
+      "precio": 3,
+      "descripcion": "",
+      "color": "#4f4fd0",
       "rotX": 0,
-      "rotY": 0
+      "rotY": 40,
+      "stl": "modelos/gengar-nowatermark-v2-lihf-mwvj7v4s.stl.gz",
+      "miniatura": "modelos/gengar-nowatermark-v2-lihf-mwvj7v4s.png"
     },
     {
       "id": "lampara-facetada",
