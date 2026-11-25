@@ -45,7 +45,8 @@
       "rotX": 180,
       "rotY": 0,
       "stl": "modelos/karambit-xfow-mwvktc1m.dgm.gz",
-      "miniatura": "modelos/karambit-xfow-mwvktc1m.png"
+      "miniatura": "modelos/karambit-xfow-mwvktc1m.png",
+      "categoria": "personalizados"
     },
     {
       "id": "lagarto-articulable-93ka",
