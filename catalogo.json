@@ -22,9 +22,9 @@
       "descripcion": "",
       "color": "#4f4fd0",
       "rotX": 0,
-      "rotY": -10,
-      "stl": "modelos/gengar-nowatermark-v2-lihf-mwvj4h6s.stl.gz",
-      "miniatura": "modelos/gengar-nowatermark-v2-lihf-mwvj4h6s.png"
+      "rotY": 40,
+      "stl": "modelos/gengar-nowatermark-v2-lihf-mwvj7v4s.stl.gz",
+      "miniatura": "modelos/gengar-nowatermark-v2-lihf-mwvj7v4s.png"
     },
     {
       "id": "lampara-facetada",
