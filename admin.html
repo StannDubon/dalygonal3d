@@ -5,19 +5,19 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, nofollow">
 <title>Panel · Dalygonal</title>
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
 /* VOICE: herramienta de trabajo, clara y calmada.
    IDEA: la mesa del taller — a la izquierda la pieza nueva sobre la cama, a la derecha el inventario.
    PICTURE: el visor 3D de la pieza que estás subiendo.
-   COLOUR and TYPE: fucsia y amarillo de la marca sobre superficies tranquilas; Syne para títulos, Inter.
+   COLOUR and TYPE: blanco, marfil, tinta y oro de la marca; Cinzel para títulos, Inter.
    LAYOUT: barra superior, dos columnas que se apilan en el teléfono. */
-:root{color-scheme:light dark;--bg:light-dark(#faf5f8,#150a1c);--ink:light-dark(#1a0f24,#f6eff8);--mut:light-dark(#6b5a75,#bba8c4);
---line:light-dark(#efe4ef,#33203d);--card:light-dark(#fff,#1e1027);--soft:light-dark(#fbf0f5,#26142f);--blue:#ff1f6b;--rose:#ffd23f;--ok:#13894a;--bad:#c42b1c}
+:root{color-scheme:light dark;--bg:light-dark(#faf8f3,#0f0e0c);--ink:light-dark(#141210,#f4efe4);--mut:light-dark(#6d665a,#a79f8f);
+--line:light-dark(#ece5d6,#2b2720);--card:light-dark(#fff,#171511);--soft:light-dark(#f4efe4,#1f1c16);--blue:#121110;--rose:#d9bf7a;--ok:#13894a;--bad:#c42b1c}
 :root[data-theme=light]{color-scheme:light}:root[data-theme=dark]{color-scheme:dark}
 *{box-sizing:border-box;min-width:0}
 body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 Inter,system-ui,sans-serif;overflow-x:clip}
-h1,h2,h3{font-family:Syne,Inter,sans-serif;line-height:1.1;margin:0}h1{font-size:24px}h2{font-size:22px;margin-bottom:12px}
+h1,h2,h3{font-family:Cinzel,Georgia,serif;font-weight:600;line-height:1.1;margin:0}h1{font-size:24px}h2{font-size:22px;margin-bottom:12px}
 .top{background:var(--blue);color:#fff;padding:14px max(4vw,16px);display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
 .top a{color:#fff}
 main{max-width:1240px;margin:0 auto;padding:24px max(4vw,16px);display:grid;gap:20px}
@@ -32,7 +32,7 @@ button{background:var(--soft);border:1px solid var(--line);border-radius:10px;pa
 button.pri{background:var(--rose);border-color:var(--rose);color:#1a0f24}button.blue{background:var(--blue);border-color:var(--blue);color:#fff}
 button:disabled{opacity:.5;cursor:wait}
 :focus-visible{outline:3px solid #ffd23f;outline-offset:2px}
-input[type=range]{accent-color:#ff1f6b;padding:0;border:0;background:none;min-height:32px}
+input[type=range]{accent-color:#b8933f;padding:0;border:0;background:none;min-height:32px}
 .rot{display:grid;grid-template-columns:5.5em minmax(0,1fr) 3.2em;gap:10px;align-items:center}
 .rot output{text-align:right;color:var(--mut);font-variant-numeric:tabular-nums}
 .stage{aspect-ratio:4/3;border-radius:14px;background:radial-gradient(circle at 50% 35%,light-dark(#fff,#2e1838),var(--soft));position:relative;overflow:hidden}
@@ -47,6 +47,11 @@ input[type=range]{accent-color:#ff1f6b;padding:0;border:0;background:none;min-he
 #status{position:fixed;left:50%;bottom:16px;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:12px 18px;border-radius:12px;max-width:calc(100% - 24px);display:none;z-index:9}
 .ok{color:var(--ok)}.bad{color:var(--bad)}
 .hidden{display:none!important}
+.sel{font:inherit;font-size:16px;color:inherit;background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:10px 12px;min-height:44px;width:100%}
+.crow{display:grid;grid-template-columns:minmax(0,1fr) auto auto auto;gap:6px;align-items:center;padding:6px 0;border-bottom:1px solid var(--line)}
+.crow .n{font-size:13px;color:var(--mut);white-space:nowrap;padding:0 4px;width:6.5em;text-align:right}
+.row2{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;margin-top:12px}
+.tagc{font-size:12px;letter-spacing:.12em;color:#9c7a2e;text-transform:uppercase}
 @media(max-width:820px){.two{grid-template-columns:minmax(0,1fr)}}
 @media(max-width:600px){.form{grid-template-columns:minmax(0,1fr)}.item{grid-template-columns:56px minmax(0,1fr)}.item .acts{grid-column:1/-1;justify-content:flex-start}}
 </style>
@@ -76,7 +81,8 @@ input[type=range]{accent-color:#ff1f6b;padding:0;border:0;background:none;min-he
           <div class="stage full" id="stage"><div class="msg" id="smsg">Aquí verás tu modelo</div></div>
           <label class="full">Nombre<input id="mname" required></label>
           <label>Precio ($)<input id="mprice" type="number" min="0" step="0.25" required></label>
-          <label>Color en el visor<input id="mcolor" type="color" value="#ff1f6b"></label>
+          <label>Categoría<select id="mcat" class="sel"></select></label>
+          <label class="full">Color en el visor<input id="mcolor" type="color" value="#d9bf7a"></label>
           <div class="full" style="display:grid;gap:6px"><b style="font-size:14px">Orientación con la que se muestra</b>
             <label class="rot" for="rx">Girar en X<input type="range" id="rx" min="-180" max="180" step="5" value="0"><output id="ox">0°</output></label>
             <label class="rot" for="ry">Girar en Y<input type="range" id="ry" min="-180" max="180" step="5" value="0"><output id="oy">0°</output></label>
@@ -89,6 +95,13 @@ input[type=range]{accent-color:#ff1f6b;padding:0;border:0;background:none;min-he
         <section class="panel">
           <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap"><h2 style="margin:0">Modelos publicados</h2><span class="note" id="count"></span></div>
           <div id="list"></div>
+        </section>
+        <section class="panel">
+          <h2>Categorías</h2>
+          <p class="note" style="margin-top:0">Así se agrupan tus modelos en la página. Cambia el nombre escribiendo encima, ordénalas con ↑ y guarda.</p>
+          <div id="clist"></div>
+          <form class="row2" id="cf"><input id="cnew" placeholder="Nueva categoría, por ej. Figuras" maxlength="40"><button type="submit">Agregar</button></form>
+          <button class="blue" id="csave" style="width:100%;margin-top:12px">Guardar categorías</button>
         </section>
         <section class="panel">
           <h2>Negocio</h2>
@@ -105,12 +118,13 @@ input[type=range]{accent-color:#ff1f6b;padding:0;border:0;background:none;min-he
           <p class="note" style="margin-top:0">Gira en grande en la pantalla principal, sobre el fondo animado. Ideal: un busto o una pieza que represente tu marca.</p>
           <form class="form" id="pf">
             <div class="full drop"><input id="pstl" type="file" accept=".stl" class="hidden"><button type="button" id="ppick">Elegir STL de portada</button><div class="note" id="pname" style="margin-top:6px"></div></div>
-            <div class="stage full" id="pstage" style="background:#ff1f6b"><div class="msg" id="pmsg" style="color:#fff">Sin modelo de portada</div></div>
+            <div class="stage full" id="pstage" style="background:radial-gradient(circle at 50% 45%,#fff,#f4efe4)"><div class="msg" id="pmsg">Sin modelo de portada</div></div>
             <label class="rot full" for="prx">Girar en X<input type="range" id="prx" min="-180" max="180" step="5" value="0"><output id="pox">0°</output></label>
             <label class="rot full" for="pry">Girar en Y<input type="range" id="pry" min="-180" max="180" step="5" value="0"><output id="poy">0°</output></label>
-            <label class="rot full" for="pdet">Detalle<input type="range" id="pdet" min="60" max="400" step="10" value="160"><output id="podet">160</output></label>
-            <p class="note full" id="pinfo" style="margin:0">Menos detalle = carga más rápida y un look más poligonal. Para la portada, entre 120 y 200 suele verse bien y abrir al instante.</p>
-            <label class="full">Color<input id="pcolor" type="color" value="#f3eee8"></label>
+            <label class="rot full" for="pdet">Detalle<input type="range" id="pdet" min="60" max="400" step="10" value="220"><output id="podet">220</output></label>
+            <p class="note full" id="pinfo" style="margin:0">Menos detalle = carga más rápida y un look más poligonal. Para mármol u oro se ve mejor entre 200 y 280: con menos detalle se notan las caras.</p>
+            <label>Estilo<select id="pestilo" style="font:inherit;font-size:16px;color:inherit;background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:10px 12px;min-height:44px"><option value="marmol">Mármol blanco</option><option value="oro">Oro pulido</option><option value="solido">Color sólido</option></select></label>
+            <label>Color (solo para color sólido)<input id="pcolor" type="color" value="#f3eee8"></label>
             <button type="button" id="pdel">Quitar portada</button><button class="pri" type="submit">Guardar portada</button>
           </form>
         </section>
@@ -174,18 +188,18 @@ async function run(label, fn) {
   if (busy) return; busy = true; document.querySelectorAll('button').forEach(b => b.disabled = true); status(label + '…');
   try { await fn(); status('Publicado. La página de clientes se actualiza en 1 o 2 minutos.', 'ok', 6000); return true; }
   catch (e) { status('No se pudo guardar: ' + e.message + '. Recarga e intenta de nuevo.', 'bad', 9000); try { CAT = await readCatalog(); } catch (_) {} return false; }
-  finally { busy = false; document.querySelectorAll('button').forEach(b => b.disabled = false); renderList(); }
+  finally { busy = false; document.querySelectorAll('button').forEach(b => b.disabled = false); renderList(); renderCats(); }
 }
 
 /* ---------- Sesión ---------- */
 async function enter() {
   status('Conectando…');
-  try { CAT = await readCatalog(); CAT.negocio ||= {}; CAT.modelos ||= []; }
+  try { CAT = await readCatalog(); CAT.negocio ||= {}; CAT.modelos ||= []; if (!CAT.categorias) CAT.categorias = DEFAULT_CATS.map(n => ({ id: slug(n), nombre: n })); CATS = clone(CAT.categorias); }
   catch (e) { $('#lmsg').textContent = 'No se pudo conectar: ' + e.message + '. Revisa usuario, repositorio y token.'; $('#lmsg').className = 'note bad'; $('#status').style.display = 'none'; return false; }
   $('#login').classList.add('hidden'); $('#app').classList.remove('hidden'); $('#logout').classList.remove('hidden');
   const n = CAT.negocio, w = n.whatsapp || ['50378541821', '50376025974'];
   $('#bname').value = n.nombre || 'Dalygonal : 3D Prints'; $('#btag').value = n.frase || ''; $('#wa1').value = w[0] || ''; $('#wa2').value = w[1] || '';
-  renderList(); loadPortada(); $('#status').style.display = 'none'; return true;
+  renderList(); renderCats(); loadPortada(); $('#status').style.display = 'none'; return true;
 }
 $('#lf').addEventListener('submit', async e => { e.preventDefault();
   C = { owner: $('#owner').value.trim(), repo: $('#repo').value.trim(), branch: $('#branch').value.trim() || 'main', token: $('#token').value.trim() };
@@ -197,14 +211,14 @@ function renderList() {
   if (!CAT) return;
   $('#count').textContent = CAT.modelos.length + ' modelo(s)';
   $('#list').innerHTML = CAT.modelos.map((m, i) => `<div class="item">${m.miniatura ? `<img src="${esc(rawUrl(m.miniatura))}" alt="">` : '<div class="ph"></div>'}
-    <div><b>${esc(m.nombre)}</b><div class="price">${money(m.precio)}</div></div>
+    <div>${catOf(m.categoria) ? `<div class="tagc">${esc(catOf(m.categoria))}</div>` : ''}<b>${esc(m.nombre)}</b><div class="price">${money(m.precio)}</div></div>
     <div class="acts"><button data-up="${i}" aria-label="Subir">↑</button><button data-ed="${i}">Editar</button><button data-del="${i}">Borrar</button></div></div>`).join('') || '<p class="note">Aún no hay modelos. Sube tu primer STL.</p>';
 }
 const rawUrl = p => `https://raw.githubusercontent.com/${C.owner}/${C.repo}/${C.branch}/${p}`;
 $('#list').addEventListener('click', e => {
   const b = e.target.closest('button'); if (!b) return;
   if (b.dataset.up) { const i = +b.dataset.up; if (i > 0) { [CAT.modelos[i - 1], CAT.modelos[i]] = [CAT.modelos[i], CAT.modelos[i - 1]]; run('Reordenando', () => commit('Reordenar catálogo', [catFile()])); } }
-  if (b.dataset.ed) { const m = CAT.modelos[+b.dataset.ed]; editing = m.id; $('#ftitle').textContent = 'Editar: ' + m.nombre; $('#mname').value = m.nombre; $('#mprice').value = m.precio; $('#mdesc').value = m.descripcion || ''; $('#mcolor').value = m.color || '#ff1f6b'; $('#save').textContent = 'Guardar cambios'; $('#fname').textContent = 'Sube un STL solo si quieres reemplazar el actual'; scrollTo({ top: 0, behavior: 'smooth' });
+  if (b.dataset.ed) { const m = CAT.modelos[+b.dataset.ed]; editing = m.id; $('#ftitle').textContent = 'Editar: ' + m.nombre; $('#mname').value = m.nombre; $('#mprice').value = m.precio; $('#mcat').value = m.categoria || ''; $('#mdesc').value = m.descripcion || ''; $('#mcolor').value = m.color || '#d9bf7a'; $('#save').textContent = 'Guardar cambios'; $('#fname').textContent = 'Sube un STL solo si quieres reemplazar el actual'; scrollTo({ top: 0, behavior: 'smooth' });
     stlBuf = null; geom = null; setRot(m.rotX || 0, m.rotY || 0); $('#smsg').style.display = ''; $('#smsg').textContent = 'Cargando modelo…';
     Visor.load(rawUrl(m.stl)).then(g => { if (editing !== m.id) return; geom = g; if (!viewer) viewer = Visor.create($('#stage')); viewer.show(geom, $('#mcolor').value, rot()); $('#smsg').style.display = 'none'; })
       .catch(() => { $('#smsg').textContent = 'No se pudo abrir el STL actual. Para cambiar la orientación, súbelo de nuevo.'; }); }
@@ -238,7 +252,7 @@ const rot = () => ({ x: +$('#rx').value, y: +$('#ry').value });
 function setRot(x, y) { $('#rx').value = x; $('#ry').value = y; $('#ox').textContent = x + '°'; $('#oy').textContent = y + '°'; if (viewer) viewer.setRotation(x, y); }
 ['rx', 'ry'].forEach(id => $('#' + id).addEventListener('input', () => setRot(+$('#rx').value, +$('#ry').value)));
 
-function clearForm() { editing = null; stlBuf = geom = null; $('#mf').reset(); $('#mcolor').value = '#ff1f6b'; setRot(0, 0); $('#ftitle').textContent = 'Subir modelo'; $('#save').textContent = 'Publicar modelo'; $('#fname').textContent = 'o arrástralo aquí';
+function clearForm() { editing = null; stlBuf = geom = null; $('#mf').reset(); $('#mcolor').value = '#d9bf7a'; setRot(0, 0); $('#ftitle').textContent = 'Subir modelo'; $('#save').textContent = 'Publicar modelo'; $('#fname').textContent = 'o arrástralo aquí';
   if (viewer) { viewer.dispose(); viewer = null; } $('#smsg').style.display = ''; $('#smsg').textContent = 'Aquí verás tu modelo'; }
 $('#cancel').onclick = clearForm;
 const slug = s => s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 40) || 'modelo';
@@ -250,7 +264,7 @@ $('#mf').addEventListener('submit', e => { e.preventDefault();
   const files = [], remove = [];
   let m = old ? { ...old } : { id: slug(name) + '-' + Math.random().toString(36).slice(2, 6) };
   const r = rot();
-  Object.assign(m, { nombre: name, precio: price, descripcion: desc, color, rotX: r.x, rotY: r.y });
+  Object.assign(m, { nombre: name, precio: price, descripcion: desc, color, rotX: r.x, rotY: r.y, categoria: $('#mcat').value });
   const v = Date.now().toString(36), looksChanged = old && (old.color !== color || (old.rotX || 0) !== r.x || (old.rotY || 0) !== r.y);
   run((old ? 'Guardando ' : 'Comprimiendo y publicando ') + name, async () => {
     if (stlBuf) {
@@ -286,7 +300,8 @@ const prot = () => ({ x: +$('#prx').value, y: +$('#pry').value });
 function pSetRot(x, y) { $('#prx').value = x; $('#pry').value = y; $('#pox').textContent = x + '°'; $('#poy').textContent = y + '°'; if (pView) pView.setRotation(x, y); }
 ['prx', 'pry'].forEach(id => $('#' + id).addEventListener('input', () => pSetRot(+$('#prx').value, +$('#pry').value)));
 $('#pcolor').addEventListener('input', e => pView && pView.setColor(e.target.value));
-function pShow(g) { pGeom = g; if (!pView) pView = Visor.create($('#pstage'), { hero: true }); pView.show(pGeom, $('#pcolor').value, prot()); $('#pmsg').style.display = 'none'; }
+function pShow(g) { pGeom = g; if (!pView) pView = Visor.create($('#pstage'), { hero: true }); pView.show(pGeom, $('#pcolor').value, prot(), $('#pestilo').value); $('#pmsg').style.display = 'none'; }
+$('#pestilo').addEventListener('change', () => { if (pGeom) pShow(pGeom); });
 function pOptimize() {
   if (!pRaw) return; const c = +$('#pdet').value; $('#podet').textContent = c;
   const g = Visor.optimize(pRaw, c), bytes = Visor.encode(g).byteLength; pBuf = true;
@@ -297,7 +312,7 @@ $('#pdet').addEventListener('input', e => $('#podet').textContent = e.target.val
 $('#pdet').addEventListener('change', () => { $('#pinfo').textContent = 'Optimizando…'; setTimeout(pOptimize, 30); });
 function loadPortada() {
   const p = CAT.negocio.portada; if (!p) return;
-  $('#pcolor').value = p.color || '#f3eee8'; pSetRot(p.rotX || 0, p.rotY || 0);
+  $('#pcolor').value = p.color || '#f3eee8'; $('#pestilo').value = ['oro', 'solido'].includes(p.estilo) ? p.estilo : 'marmol'; pSetRot(p.rotX || 0, p.rotY || 0);
   $('#pmsg').textContent = 'Cargando portada…';
   Visor.load(rawUrl(p.stl)).then(pShow).catch(() => { $('#pmsg').textContent = 'Portada guardada (no se pudo previsualizar aquí)'; });
 }
@@ -310,7 +325,7 @@ $('#pf').addEventListener('submit', e => { e.preventDefault();
   if (!pBuf && !old) { status('Primero elige el STL de portada.', 'bad', 4000); return; }
   run('Guardando portada', async () => {
     const files = [], remove = [], r = prot();
-    const p = { ...(old || {}), color: $('#pcolor').value, rotX: r.x, rotY: r.y }; delete p.credito;
+    const p = { ...(old || {}), color: $('#pcolor').value, estilo: $('#pestilo').value, rotX: r.x, rotY: r.y }; delete p.credito;
     if (pBuf) {
       const raw = Visor.encode(pGeom), gz = await Visor.gzip(raw), data = gz || raw, path = 'modelos/portada-' + Date.now().toString(36) + '.dgm' + (gz ? '.gz' : '');
       if (data.byteLength > 95 * 1048576) throw new Error('la portada pesa más de 95 MB aun comprimida');
@@ -323,6 +338,41 @@ $('#pf').addEventListener('submit', e => { e.preventDefault();
 $('#pdel').onclick = e => { const old = CAT.negocio.portada; if (!old) return;
   if (!e.target.dataset.sure) { e.target.dataset.sure = 1; e.target.textContent = '¿Seguro?'; return; }
   delete CAT.negocio.portada; run('Quitando portada', () => commit('Quitar portada', [catFile()], [old.stl])).then(() => { if (pView) { pView.dispose(); pView = null; } $('#pmsg').style.display = ''; $('#pmsg').textContent = 'Sin modelo de portada'; e.target.textContent = 'Quitar portada'; delete e.target.dataset.sure; }); };
+
+/* ---------- Categorías ---------- */
+const DEFAULT_CATS = ['Figuras', 'Cotidianos', 'Decoración', 'Personalizados'];
+let CATS = [];   // copia en edición; se publica con "Guardar categorías"
+const clone = a => JSON.parse(JSON.stringify(a || []));
+function catOf(id) { return ((CAT && CAT.categorias) || []).find(c => c.id === id)?.nombre || ''; }
+function renderCats() {
+  if (!CAT) return; CAT.categorias ||= [];
+  const keep = $('#mcat').value;
+  $('#mcat').innerHTML = '<option value="">Sin categoría</option>' + CAT.categorias.map(c => `<option value="${esc(c.id)}">${esc(c.nombre)}</option>`).join('');
+  $('#mcat').value = CAT.categorias.some(c => c.id === keep) ? keep : '';
+  $('#clist').innerHTML = CATS.map((c, i) => { const n = CAT.modelos.filter(m => m.categoria === c.id).length;
+    return `<div class="crow"><input data-ci="${i}" value="${esc(c.nombre)}" maxlength="40" aria-label="Nombre de la categoría"><span class="n">${n} modelo${n === 1 ? '' : 's'}</span><button data-cu="${i}" aria-label="Subir">↑</button><button data-cd="${i}">Borrar</button></div>`; }).join('')
+    || '<p class="note">No hay categorías. Agrega la primera abajo.</p>';
+  const dirty = JSON.stringify(CATS) !== JSON.stringify(CAT.categorias);
+  $('#csave').textContent = dirty ? 'Guardar categorías (hay cambios)' : 'Guardar categorías';
+}
+$('#clist').addEventListener('input', e => { const i = e.target.dataset.ci; if (i !== undefined) { CATS[+i].nombre = e.target.value; $('#csave').textContent = 'Guardar categorías (hay cambios)'; } });
+$('#clist').addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return;
+  if (b.dataset.cu) { const i = +b.dataset.cu; if (i > 0) [CATS[i - 1], CATS[i]] = [CATS[i], CATS[i - 1]]; renderCats(); }
+  if (b.dataset.cd) { const i = +b.dataset.cd, n = CAT.modelos.filter(m => m.categoria === CATS[i].id).length;
+    if (n && !b.dataset.sure) { b.dataset.sure = 1; b.textContent = `¿Seguro? ${n} quedarán sin categoría`; return; }
+    CATS.splice(i, 1); renderCats(); } });
+$('#cf').addEventListener('submit', e => { e.preventDefault(); const n = $('#cnew').value.trim(); if (!n) return;
+  if (CATS.some(c => c.nombre.toLowerCase() === n.toLowerCase())) { status('Esa categoría ya existe.', 'bad', 3000); return; }
+  let id = slug(n); while (CATS.some(c => c.id === id) || CAT.categorias.some(c => c.id === id && !CATS.some(k => k.id === id))) id += '-' + Math.random().toString(36).slice(2, 4);
+  CATS.push({ id, nombre: n }); $('#cnew').value = ''; renderCats(); });
+$('#csave').onclick = () => {
+  if (CATS.some(c => !c.nombre.trim())) { status('Hay una categoría sin nombre.', 'bad', 3000); return; }
+  CATS.forEach(c => c.nombre = c.nombre.trim());
+  const ids = new Set(CATS.map(c => c.id));
+  CAT.categorias = clone(CATS);
+  CAT.modelos.forEach(m => { if (m.categoria && !ids.has(m.categoria)) m.categoria = ''; });
+  run('Guardando categorías', () => commit('Actualizar categorías', [catFile()]));
+};
 
 if (C) { $('#owner').value = C.owner; $('#repo').value = C.repo; $('#branch').value = C.branch; enter(); }
 }

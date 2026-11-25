@@ -94,15 +94,18 @@
   }
   const isDGM = buf => buf.byteLength > 40 && new Uint8Array(buf, 0, 4).every((c, i) => c === [68, 71, 77, 49][i]);
 
-  function buildScene(geom, color, rot, hero) {
+  function buildScene(geom, color, rot, hero, look) {
     const scene = new THREE.Scene();
     scene.add(new THREE.HemisphereLight(0xffffff, 0x8a8f99, hero ? 0.5 : 0.9));
     const d = new THREE.DirectionalLight(0xffffff, hero ? 0.55 : 0.8); d.position.set(1, 2, 1.4); scene.add(d);
     const d2 = new THREE.DirectionalLight(0xffffff, 0.3); d2.position.set(-1.5, 0.5, -1); scene.add(d2);
-    const mat = new THREE.MeshStandardMaterial({ color: color || '#ef8f86', roughness: hero ? 0.4 : 0.55, metalness: 0.05, flatShading: !!hero });
-    if (hero) {   // luces de color de la marca para el modelo de portada
-      const p1 = new THREE.PointLight(0xff1f6b, 0.45); p1.position.set(-3, 1, 2); scene.add(p1);
-      const p2 = new THREE.PointLight(0xffd23f, 0.35); p2.position.set(3, 2, -1); scene.add(p2);
+    let mat;
+    if (hero && look === 'oro') mat = new THREE.MeshStandardMaterial({ color: '#d4af37', metalness: 1, roughness: 0.26, envMap: studio(), envMapIntensity: 1.1 });
+    else if (hero) mat = new THREE.MeshStandardMaterial({ color: look === 'solido' ? (color || '#f2eee6') : '#f4f0e8', roughness: 0.38, metalness: 0, envMap: studio(), envMapIntensity: 0.55 });
+    else mat = new THREE.MeshStandardMaterial({ color: color || '#d9bf7a', roughness: 0.55, metalness: 0.05 });
+    if (hero) {   // luz de borde cálida, como un busto en una galería
+      const p1 = new THREE.PointLight(0xffd99a, 0.55); p1.position.set(-3, 1.5, -2); scene.add(p1);
+      const p2 = new THREE.PointLight(0xffffff, 0.25); p2.position.set(3, 2, 2); scene.add(p2);
     }
     const mesh = new THREE.Mesh(geom, mat);
     const r = geom.boundingSphere.radius;
@@ -130,6 +133,20 @@
       lo = Math.min(lo, v.y); hi = Math.max(hi, v.y);
     }
     s.pivot.position.y = -lo; s.baseY = -lo; s.target.set(0, (hi - lo) / 2, 0);
+  }
+
+  /* Estudio fotográfico simple: reflejos suaves para mármol y oro, sin descargar imágenes. */
+  let env = null;
+  function studio() {
+    if (env) return env;
+    const face = (top, bottom, box) => {
+      const c = document.createElement('canvas'); c.width = c.height = 128; const x = c.getContext('2d');
+      const g = x.createLinearGradient(0, 0, 0, 128); g.addColorStop(0, top); g.addColorStop(1, bottom); x.fillStyle = g; x.fillRect(0, 0, 128, 128);
+      if (box) { const r = x.createRadialGradient(64, 50, 4, 64, 50, 46); r.addColorStop(0, 'rgba(255,255,255,1)'); r.addColorStop(1, 'rgba(255,255,255,0)'); x.fillStyle = r; x.fillRect(0, 0, 128, 128); }
+      return c;
+    };
+    env = new THREE.CubeTexture([face('#ffffff', '#b9ae98', true), face('#f4efe4', '#8f8572'), face('#ffffff', '#ffffff'), face('#8a7c64', '#5a5040'), face('#ffffff', '#a99f8a', true), face('#e9e2d3', '#7d7462')]);
+    env.needsUpdate = true; return env;
   }
 
   function placeCamera(cam, s, theta, phi, dist) {
@@ -192,13 +209,13 @@
     if (!hero) el.addEventListener('wheel', e => { if (!s) return; e.preventDefault(); auto = false; dist = Math.min(s.r * 8, Math.max(s.r * 0.8, dist * (1 + Math.sign(e.deltaY) * 0.1))); }, { passive: false });
 
     return {
-      show(geom, color, rot) {
+      show(geom, color, rot, look) {
         if (s) { s.mesh.material.dispose(); }
-        s = buildScene(geom, color, rot, hero); dist = far(); theta = hero ? -0.4 : 0.7; phi = hero ? 1.45 : 1.1; auto = true;
+        s = buildScene(geom, color, rot, hero, look); dist = far(); theta = hero ? -0.4 : 0.7; phi = hero ? 1.45 : 1.1; auto = true;
         if (hero && !still) { intro = performance.now(); s.pivot.scale.setScalar(0.55); }
       },
       setRotation(x, y) { if (s) { applyRotation(s, x, y); if (!hero) auto = false; } },
-      setColor(c) { if (s) s.mesh.material.color.set(c); },
+      setColor(c) { if (s && s.mesh.material.color) s.mesh.material.color.set(c); },
       reset() { if (s) { dist = far(); theta = 0.7; phi = hero ? 1.45 : 1.1; auto = true; } },
       dispose() { alive = false; cancelAnimationFrame(raf); ro.disconnect(); if (s) s.mesh.material.dispose(); renderer.dispose(); try { renderer.forceContextLoss(); } catch (_) {} el.remove(); }
     };
