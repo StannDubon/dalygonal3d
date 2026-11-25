@@ -15,6 +15,17 @@
   },
   "modelos": [
     {
+      "id": "jarrones-de-punto-texturizado-sllj",
+      "nombre": "Jarrones de punto texturizado",
+      "precio": 10,
+      "descripcion": "",
+      "color": "#ad9872",
+      "rotX": 0,
+      "rotY": 0,
+      "stl": "modelos/jarrones-de-punto-texturizado-sllj-mwvkhxi2.dgm.gz",
+      "miniatura": "modelos/jarrones-de-punto-texturizado-sllj-mwvkhxi2.png"
+    },
+    {
       "id": "ocarina-bsmv",
       "nombre": "Ocarina",
       "precio": 8,
